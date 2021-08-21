@@ -9,10 +9,10 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 
-import static org.example.kafka.ecommerce.Group.FRAUD_DETECTION;
+import static org.example.kafka.ecommerce.Group.LOG;
 import static org.example.kafka.ecommerce.Topics.NEW_ORDER;
 
-public class FraudDetectorService {
+public class LogService {
     public static void main(String[] args) {
         var consumer = new KafkaConsumer<>(properties());
         consumer.subscribe(List.of(NEW_ORDER.getLabel()));
@@ -20,9 +20,11 @@ public class FraudDetectorService {
         while (true) {
             var records = consumer.poll(Duration.ofMillis(1000));
             if (!records.isEmpty()) {
-                System.out.println("Found " + records.count() + " orders");
                 for (var record : records) {
-                    System.out.println("Checking record for fraud = " + record.value());
+                    System.out.println("--------------------------------");
+                    System.out.println("Log:::" + record.topic());
+                    System.out.println("Key:::" + record.key());
+                    System.out.println("Val:::" + record.value());
                 }
             }
         }
@@ -35,7 +37,7 @@ public class FraudDetectorService {
         props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, deserializer);
         props.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
-        props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, FRAUD_DETECTION.getName());
+        props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, LOG.getName());
 
         return props;
     }
