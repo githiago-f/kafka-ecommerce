@@ -16,12 +16,16 @@ public class NewOrderMain {
         String value = "{Product=1, Price=123, UserId=1}";
         var record = new ProducerRecord<>(NEW_ORDER.getLabel(), value, value);
         producer.send(record, (data, e) -> {
+            if(e!=null) {
+                e.printStackTrace();
+                return;
+            }
             System.out.println(
                     "Message sent to " + data.topic() + ":::" + data.partition() + " at " + data.offset());
         }).get();
     }
 
-    private static Properties properties() {
+    protected static Properties properties() {
         var props = new Properties();
         props.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         var serializerName = StringSerializer.class.getName();
