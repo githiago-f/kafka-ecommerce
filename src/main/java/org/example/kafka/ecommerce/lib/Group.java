@@ -1,4 +1,4 @@
-package org.example.kafka.ecommerce;
+package org.example.kafka.ecommerce.lib;
 
 public enum Group {
     FRAUD_DETECTION("FraudDetectionServices"),

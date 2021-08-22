@@ -1,10 +1,10 @@
-package org.example.kafka.ecommerce;
+package org.example.kafka.ecommerce.lib;
 
-public enum Topics {
+public enum Topic {
     NEW_ORDER("ECOMMERCE_NEW_ORDER");
 
     private final String label;
-    Topics(String label) {
+    Topic(String label) {
         this.label = label;
     }
     public String getLabel() {
