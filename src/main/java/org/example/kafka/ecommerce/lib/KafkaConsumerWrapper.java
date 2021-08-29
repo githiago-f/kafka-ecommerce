@@ -4,10 +4,12 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class KafkaConsumerWrapper {
-    private final KafkaConsumer<String, String> consumer;
+public class KafkaConsumerWrapper<T> implements AutoCloseable {
+    private final KafkaConsumer<String, T> consumer;
+    private Boolean kill = false;
 
     public KafkaConsumerWrapper(Group group) {
         this.consumer = new KafkaConsumer<>(
@@ -15,25 +17,33 @@ public class KafkaConsumerWrapper {
         );
     }
 
-    public KafkaConsumerWrapper subscribe(Pattern pattern) {
+    public KafkaConsumerWrapper<T> subscribe(Pattern pattern) {
         this.consumer.subscribe(pattern);
         return this;
     }
 
-    public KafkaConsumerWrapper subscribe(Collection<String> pattern) {
+    public KafkaConsumerWrapper<T> subscribe(Collection<String> pattern) {
         this.consumer.subscribe(pattern);
         return this;
     }
 
-    public void execute(RecordCallback<String> recordCallback) {
-        while (true) {
+    public void execute(RecordCallback<T> recordCallback) {
+        do {
             var records = consumer.poll(Duration.ofMillis(100));
             if (!records.isEmpty()) {
                 for (var record : records) {
+                    if(Objects.equals(record.value(), "END")) {
+                        kill = true;
+                    }
                     recordCallback.exec(record);
                 }
             }
             Thread.yield();
-        }
+        } while (!kill);
+    }
+
+    @Override
+    public void close() {
+        this.consumer.close();
     }
 }

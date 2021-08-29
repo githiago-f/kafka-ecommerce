@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.example.kafka.ecommerce.entities.Order;
 
 import java.util.Properties;
 
@@ -28,7 +29,7 @@ public class KafkaProps {
         return props
                 .prop(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, server)
                 .prop(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, serializerName)
-                .prop(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, serializerName)
+                .prop(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GsonSerializer.class.getName())
                 .getProps();
     }
 
@@ -43,9 +44,10 @@ public class KafkaProps {
         return props
             .prop(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
             .prop(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, deserializer)
-            .prop(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer)
+            .prop(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GsonDeserializer.class.getName())
             .prop(ConsumerConfig.GROUP_ID_CONFIG, group.getName())
             .prop(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1")
+            .prop(GsonDeserializer.TYPE_NAME_CONFIG, Order.class.getName())
             .getProps();
     }
 }

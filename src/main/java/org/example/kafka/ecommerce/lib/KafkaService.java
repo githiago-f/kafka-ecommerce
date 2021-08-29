@@ -6,8 +6,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.concurrent.ExecutionException;
 
-public class KafkaService<T> {
-    private final KafkaProducer<T, T> producer;
+public class KafkaService<K, T> {
+    private final KafkaProducer<K, T> producer;
     private final Callback callback;
 
     public KafkaService(Callback callback) {
@@ -17,7 +17,7 @@ public class KafkaService<T> {
         );
     }
 
-    public void sendRecord(ProducerRecord<T, T> record) {
+    public void sendRecord(ProducerRecord<K, T> record) {
         try {
             producer.send(record, this.callback).get();
         } catch (InterruptedException | ExecutionException e) {
