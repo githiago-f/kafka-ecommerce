@@ -4,7 +4,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.example.kafka.ecommerce.entities.Order;
 
 import java.util.Properties;
 
@@ -37,7 +36,7 @@ public class KafkaProps {
         return producerProperties("localhost:9092");
     }
 
-    public static Properties consumerProperties(Group group) {
+    public static <T> Properties consumerProperties(Class<T> type, Group group) {
         var props = new KafkaProps();
         var deserializer = StringDeserializer.class.getName();
 
@@ -47,7 +46,7 @@ public class KafkaProps {
             .prop(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GsonDeserializer.class.getName())
             .prop(ConsumerConfig.GROUP_ID_CONFIG, group.getName())
             .prop(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1")
-            .prop(GsonDeserializer.TYPE_NAME_CONFIG, Order.class.getName())
+            .prop(GsonDeserializer.TYPE_NAME_CONFIG, type.getName())
             .getProps();
     }
 }

@@ -11,9 +11,9 @@ public class KafkaConsumerWrapper<T> implements AutoCloseable {
     private final KafkaConsumer<String, T> consumer;
     private Boolean kill = false;
 
-    public KafkaConsumerWrapper(Group group) {
+    public KafkaConsumerWrapper(Class<T> type, Group group) {
         this.consumer = new KafkaConsumer<>(
-                KafkaProps.consumerProperties(group)
+                KafkaProps.consumerProperties(type, group)
         );
     }
 

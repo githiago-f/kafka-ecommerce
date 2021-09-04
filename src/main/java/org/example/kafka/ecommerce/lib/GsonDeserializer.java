@@ -30,8 +30,9 @@ public class GsonDeserializer<T> implements Deserializer<T> {
 
     @Override
     public T deserialize(String s, byte[] bytes) {
-        logger.debug("Deserializing-------------");
-        logger.debug(new String(bytes));
+        if(type == String.class){
+            return (T) new String(bytes);
+        }
         return gson.fromJson(new String(bytes), type);
     }
 }

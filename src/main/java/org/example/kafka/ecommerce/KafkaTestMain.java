@@ -5,6 +5,7 @@ import org.example.kafka.ecommerce.services.EmailService;
 import org.example.kafka.ecommerce.services.FraudDetectorService;
 import org.example.kafka.ecommerce.services.LogService;
 import org.example.kafka.ecommerce.usecases.NewOrder;
+import org.example.kafka.ecommerce.usecases.SendEmail;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,25 +18,26 @@ public class KafkaTestMain {
 
         List<Runnable> threads = List.of(
                 new FraudDetectorService(),
-                new FraudDetectorService(),
                 new EmailService(),
                 new LogService()
         );
 
         for (var thread : threads) { executor.submit(thread); }
 
-        var command = new NewOrder();
+        try (var emailService = new SendEmail()) {
+            try (var command = new NewOrder(emailService)) {
+                for (int i = 0; i < 10; i++) {
+                    var order = new Order(
+                            UUID.randomUUID(),
+                            UUID.randomUUID(),
+                            BigDecimal.valueOf(Math.random() * 5000 + 1)
+                    );
+                    command.execute(order);
+                }
 
-        for (int i = 0; i < 10; i++) {
-            var order = new Order(
-                    UUID.randomUUID(),
-                    UUID.randomUUID(),
-                    BigDecimal.valueOf(Math.random() * 5000 + 1)
-            );
-            command.execute(order);
+                Thread.sleep(5000);
+            }
         }
-
-        Thread.sleep(5000);
 
         executor.shutdown();
     }

@@ -16,11 +16,11 @@ public class LogService implements Runnable {
 
     @Override
     public void run() {
-        try(var consumer = new KafkaConsumerWrapper<Order>(LOG).subscribe(topics)) {
-            RecordCallback<Order> callback = record -> {
+        try(var consumer = new KafkaConsumerWrapper<>(String.class, LOG).subscribe(topics)) {
+            RecordCallback<String> callback = record -> {
                 logger.info("--------------------------------");
                 logger.info("Topic:::" + record.topic());
-                logger.info(record.key() + " ::: " + record.value().getId());
+                logger.info(record.key() + " ::: " + record.value());
             };
             consumer.execute(callback);
         }

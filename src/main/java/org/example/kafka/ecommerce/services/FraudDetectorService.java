@@ -11,13 +11,14 @@ import static org.example.kafka.ecommerce.lib.Group.FRAUD_DETECTION;
 import static org.example.kafka.ecommerce.lib.Topic.NEW_ORDER;
 
 public class FraudDetectorService implements Runnable {
-    private final Logger logger = LoggerFactory.getLogger(FraudDetectorService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(FraudDetectorService.class.getSimpleName());
     List<String> topics = List.of(NEW_ORDER.getLabel());
 
     @Override
     public void run() {
-        try(var consumer = new KafkaConsumerWrapper<Order>(FRAUD_DETECTION).subscribe(topics)) {
-            consumer.execute(record -> logger.info("Checking order for fraud = " + record.value().getId()));
+        try(var consumer = new KafkaConsumerWrapper<>(Order.class, FRAUD_DETECTION)
+                .subscribe(topics)) {
+            consumer.execute(record -> logger.info("Checking order for fraud ::: " + record.value().getId()));
         }
     }
 }

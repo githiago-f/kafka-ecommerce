@@ -29,4 +29,14 @@ public class Order {
     public UUID getUserId() {
         return userId;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "userId=" + userId +
+                ", productId=" + productId +
+                ", id=" + id +
+                ", price=" + price +
+                '}';
+    }
 }
