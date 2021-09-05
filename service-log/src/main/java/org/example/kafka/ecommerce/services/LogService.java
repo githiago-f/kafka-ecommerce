@@ -1,6 +1,5 @@
 package org.example.kafka.ecommerce.services;
 
-import org.example.kafka.ecommerce.entities.Order;
 import org.example.kafka.ecommerce.lib.KafkaConsumerWrapper;
 import org.example.kafka.ecommerce.lib.RecordCallback;
 import org.slf4j.Logger;

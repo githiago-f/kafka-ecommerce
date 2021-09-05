@@ -6,8 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="kafka-ecommerce" />
+        <module name="shared" />
+        <module name="service-log" />
+        <module name="service-fraud-detector" />
+        <module name="service-email" />
+        <module name="executor-test" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="service-order" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
